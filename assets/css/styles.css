@@ -1,0 +1,749 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Neucha&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Neucha&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Indie+Flower&family=Neucha&display=swap');
+
+.bkg {
+    background-color: #e3e3e3;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2394d690' fill-opacity='0.23' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+body {
+    height: 100vh;
+}
+
+#datos {
+    border:1px solid #ccc;padding:10px;font-size:1em;
+}
+
+#datos tr:nth-child(even) {
+    background:#ccc;
+}
+
+#datos th {
+    padding:5px 15px;
+    text-align: left;
+}
+
+#datos td {
+    padding:5px;
+    text-align: left;
+}
+
+.paperbkg {
+    position: relative;
+    min-height: 25vh;
+    max-height: 65vh;
+    background-image: url(../img/paper.png);
+    background-repeat: repeat-y;
+    border-top: 1px solid rgba(204, 204, 204, 0.281);
+    border-top-right-radius: 30px;
+    background-position-x: right;
+    background-size: cover;
+    padding-top: 135px;
+    -webkit-box-shadow: -14px 10px 7px -4px rgba(0,0,0,0.4); 
+    box-shadow: -14px 10px 7px -4px rgba(0,0,0,0.4);
+}
+
+.paperbkg--ingredients {
+    width: 320px;
+    border-bottom-right-radius: 25px;
+}
+
+.paperbkg--recipe {
+    width: 320px;
+    border-bottom-right-radius: 20px;
+}
+
+.paper__pin1 {
+    position: absolute;
+    top: 0;
+    right: 35%;
+    width: 35px;
+}
+.paper__pin2 {
+    position: absolute;
+    top: 0;
+    right: 48%;
+    width: 35px;
+}
+
+select,
+input {
+    width: 50px;
+    background-color: rgba(0, 0, 0, 0.055);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-top: 1px solid rgba( 0, 0, 0, 0.3 );
+    border-right: 1px solid rgba( 255, 255, 255, 0.7 );
+    border-bottom: 1px solid rgba( 255, 255, 255, 0.7 );
+    border-left: 1px solid rgba(0,0,0, 0.3 );
+    border-radius: 5px;
+    border-style: dashed;
+}
+
+p,
+label,
+span {
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.2rem;
+}
+
+.ingredientSpan {
+    font-family: 'Indie Flower', cursive;
+    font-size: 1rem;
+}
+
+select {
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.1rem;
+}
+
+.fixedList {
+    position: absolute;
+    top: -15px;
+    z-index: 3;
+}
+
+#searchInput {
+    width: 200px;
+}
+
+.selectUnit,
+.inputCantidad {
+    width: 40px;
+}
+
+
+.receta__nombre {
+    width: 180px;
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.2rem;
+}
+
+.porciones__numero {
+    width: 40px;
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.lista__ingredientes {
+    border: none;
+}
+
+.lista__ingredientes td {
+    display: none;
+}
+
+.lista__ingredientes .producto {
+    display: block;
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.2rem;
+    font-weight:500;
+    padding: 0 5px;
+}
+
+.lista__ingredientes .producto:hover {
+    color: rgb(127, 140, 255);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.lista__ingredientes .producto:hover::after {
+    content: "\f064";
+    font-weight: 900;
+    font-size: 1rem;
+    font-family: "Font Awesome 5 Free";
+    margin-left: 15px;
+}
+
+.lista__ingredientes .producto::before {
+    content: "\f1cd";
+    font-weight: 900;
+    font-size: 0.5rem;
+    font-family: "Font Awesome 5 Free";
+    margin-right: 10px;
+}
+
+#lista td {
+    width: 300px;
+}
+
+#lista tr:nth-child(even) {
+    background:rgba(204, 204, 204, 0.356);
+}
+
+.vaciar__lista {
+    font-size: 1.5rem;
+    color: rgba(0, 0, 128, 0.801);
+}
+
+.fa-times-circle {
+    color:darkred;
+    font-size: 1.4rem;
+}
+
+.fa-times-circle:hover {
+    color: crimson;
+}
+
+.fa-trash-alt:hover {
+    color: rgb(97, 127, 211);
+}
+
+/**********************ICONOS MENU CON GRADIENTE******************************************************************************************/
+.fa-gradientIcon {
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0px 0px 0px transparent;
+}
+
+.fa-zanahoria {
+    background-image: linear-gradient(to left bottom, #05F211 39%, #FAC30F 41%);
+}
+
+.fa-huevo {
+    background-image: radial-gradient(circle, rgba(224,130,13,1) 4%, rgba(212,192,60,1) 45%, rgba(159,72,45,1) 100%);
+}
+
+.fa-pez {
+    background-image:linear-gradient(0deg, rgba(7, 36, 255, 0.61) 14%, rgba(55, 0, 212, 0.62) 41%, rgba(0, 30, 157, 0.41) 56%);
+}
+
+.fa-pan {
+    background-image: radial-gradient(circle, rgba(172,159,28,1) 22%, rgba(212,192,60,1) 53%, rgba(168,138,44,1) 71%);
+}
+
+.fa-panceta {
+    background-image: radial-gradient(circle, rgba(236,202,213,1) 1%, rgba(238,69,249,1) 53%, rgba(168,44,124,1) 87%);
+}
+
+.fa-vino {
+    background-image:linear-gradient(0deg, rgba(7, 255, 184, 0.71) 21%, rgba(118, 0, 212, 1) 51%, rgba(0, 157, 126, 0.41) 66%);
+}
+/****************************************************************************************************************************************/
+
+/********************MENU HORIZONTAL*****************************************************************************************************/
+.top-bar {
+    background: #F7F7F7;
+    border-bottom: 1px solid #e5e5e5;
+    box-shadow: 1px 0 15px rgba(0, 0, 0, 0.150);
+    font-family: 'Amatic SC', cursive;
+    font-weight: 600;
+    font-size: 1.6rem;
+}
+
+#topButtonGroup {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+/********************MENU LATERAL********************************************************************************************************/
+.main-menu:hover {
+    width: 260px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    opacity: 1;
+}
+
+.main-menu {
+    background: #F7F7F7;
+    border-right: 1px solid #e5e5e5;
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left: 0;
+    min-height: 100%;
+    width: 55px;
+    overflow: hidden;
+    -webkit-transition: width .2s linear;
+    transition: width .2s linear;
+    box-shadow: 1px 0 15px rgba(0, 0, 0, 0.150);
+    opacity: 1;
+    z-index: 10;
+}
+
+.main-menu li {
+    position: relative;
+    display: block;
+    width: 260px;
+}
+
+.main-menu li>a {
+    position: relative;
+    width: 260px;
+    color: #3e58ed;
+    text-decoration: none;
+    -webkit-transition: all .15s linear;
+    transition: all .15s linear;
+    font-family: 'Amatic SC', cursive;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border-top: 1px solid #ece9e9;
+    box-shadow: inset 0 1px 1px #fafafa;
+    text-shadow: 1px 1px 1px rgb(226, 225, 225);
+}
+
+.links {
+    position: relative;
+    opacity: 0;
+    width: 260px;
+    text-align: center;
+}
+
+.links a {
+    text-decoration: none;
+    color: #3e58ed;
+    font-family: 'Amatic SC', cursive;
+    font-weight:600;
+    font-size: 1.4rem;
+    text-shadow: 1px 1px 1px rgb(226, 225, 225);
+}
+.parent span {
+    font-family: 'Amatic SC', cursive;
+    font-weight:600;
+    font-size: 1.3rem;
+}
+
+#btn_acercaDe {
+    font-size: 1.2rem;
+}
+
+hr.dashed {
+    border-top: 2px dashed #3e58ed;
+    color: transparent;
+    margin: 0 0 1px 0;
+}
+
+hr.dashed2 {
+    border-top: 2px dashed #000000;
+    color: transparent;
+    margin: 5px 0 1px 0;
+    animation: expand .8s ease-in-out;
+    margin-right: 12%;
+    margin-left: 8%;
+}
+
+.main-menu .nav-text {
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+    width: 130px;
+}
+
+#footer {
+    background: #F7F7F7;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 1px 0 15px rgba(0, 0, 0, 0.150);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 8;
+}
+
+nav ul,
+nav li {
+    outline: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.main-menu li:hover>a {
+    color: #fff;
+    background-color: #3e98ed;
+    text-shadow: 0px 0px 0px;
+}
+/**************************************************************************************************************************************/
+
+/****LOGO MENU HORIZONTAL****/
+.main-menu:hover .logo {
+    width: 35%;
+    height: 90px;
+    margin: 15px 0 0 80px;
+    transition: .5s ease;
+}
+
+.logo {
+    width: 100%;
+    height: 55px;
+    margin: 25px auto;
+    transition: .5s ease;
+}
+
+.logo-container {
+    width: 100%;
+    height: 70px;
+}
+/****************************/
+
+/*******ESTILOS SUBMENU******/
+
+li.submenu {
+    display: none;
+    list-style-type: none;
+}
+
+li.submenu>a {
+    text-align: center;
+    height: 35px;
+    display: table-cell;
+    vertical-align: middle;
+    line-height: 35px;
+}
+
+.main-menu .nav-text:hover .ul.visible {
+    display: block;
+}
+
+.main-menu:hover .links  {
+    opacity: 1;
+    transition: .5s ease;
+}
+
+.main-menu:hover .dashed {
+    animation: expand .8s ease-in-out;
+    margin-right: 10%;
+    margin-left: 10%;
+}
+
+/***************************************/
+
+/****scrollbar**************************/
+.tiny-scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.tiny-scrollbar::-webkit-scrollbar {
+    width: 3px;
+    background-color: #F5F5F5;
+}
+
+.tiny-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #3e90ed;
+}
+/**************************************/
+
+::-webkit-scrollbar {
+    width: 10px; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(71, 231, 191, 0.637);
+    border-radius: 10px; 
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 4px #16d6ac; 
+}
+
+.recipe::-webkit-scrollbar-track,
+.lista__scrollable::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 4px #b3b3b300; 
+}
+
+::-webkit-scrollbar-corner,
+.recipe::-webkit-scrollbar-thumb,
+.lista__scrollable::-webkit-scrollbar-thumb {
+    display: none;
+}
+
+@keyframes expand {
+    0% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
+}
+
+.recipe {
+    overflow: scroll;
+    min-height: 28vh;
+    max-height: 38vh;
+}
+
+.lista__scrollable {
+    overflow: scroll;
+    min-height: 20vh;
+    max-height: 25vh;
+    width: 90%;
+}
+
+.paper__pin1:hover,
+.paper__pin2:hover {
+
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    animation-name: wobble; 
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+    
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-3px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(3px, 0, 0);
+    }
+}
+
+@keyframes wobble { 
+    0% { transform: translateX(0%); } 
+    15% { transform: translateX(-25%) rotate(-5deg); } 
+    30% { transform: translateX(20%) rotate(3deg); } 
+    45% { transform: translateX(-15%) rotate(-3deg); } 
+    60% { transform: translateX(10%) rotate(2deg); } 
+    75% { transform: translateX(-5%) rotate(-1deg); } 
+    100% { transform: translateX(0%); } 
+}
+
+.wobble { 
+    -webkit-animation-name: wobble; 
+    animation-name: wobble; 
+}
+
+.nutritional-info {
+    border: 5px double #aaa;
+    border-radius: 5px;
+    text-align: center;
+    background-image: url(../img/paperbkg.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: rgb(245, 240, 240);
+    display: none;
+    -webkit-box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54); 
+    box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54);
+}
+
+.nutritional-info  h2 { 
+    font-family: 'Indie Flower', cursive;
+    font-size: 2rem;
+    font-weight: 600;
+    padding: 8px 0;
+    border-bottom: 5px double #aaa;
+}
+
+.line-separator {
+    border-bottom: 5px double #aaa;
+}
+
+/* Alerta elemento repetido */
+
+#alertaRepetido {
+    display: none;
+    position: fixed;
+    top: 50vh;
+    font-weight: 600;
+    padding: 20px 40px 0 40px;
+    border-radius: 10px;
+    background-image: url(../img/brownpaper.png);
+    border: solid 1px rgba(0, 0, 0, 0.575);
+    -webkit-box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54); 
+    box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54);
+    z-index: 10;
+}
+
+#alertaUnidadErronea {
+    display: none;
+    position: fixed;
+    top: 50vh;
+    font-weight: 600;
+    padding: 20px 40px 0 40px;
+    border-radius: 10px;
+    background-image: url(../img/brownpaper.png);
+    border: solid 1px rgba(0, 0, 0, 0.575);
+    -webkit-box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54); 
+    box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54);
+    z-index: 10;
+}
+
+#acercaDe {
+    display: none;
+    position: fixed;
+    font-weight: 600;
+    background-image: url(../img/postit.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 10;
+}
+
+/* BOTONES CALCULO Y LOCAL STORAGE */
+
+.botonMenuSuperior span {
+    font-family: 'Amatic SC', cursive;
+    font-size: 1.3rem;
+    font-weight: 900;
+    text-align: center;
+    text-shadow: 1px 1px 0px #FFFFFF;
+    text-decoration: none;
+}
+
+.botonMenuSuperior {
+    font-family: 'Amatic SC', cursive;
+    font-size: 1.3rem;
+    font-weight: 900;
+    text-align: center;
+    text-shadow: 1px 1px 0px #FFFFFF;
+    text-decoration: none;
+    background-image: url(../img/brownpaper.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 5px;
+    border: 1px dashed rgb(136, 127, 43);
+    border-collapse: separate;
+    border-spacing: 5px 5px;
+    padding: 5px;
+    margin: 1px 2px;
+    max-width: 3rem;
+    -webkit-box-shadow: -1px 16px 28px 5px rgba(0,0,0,0.46); 
+    box-shadow: -1px 16px 28px 5px rgba(0,0,0,0.46);
+    color: rgb(0, 0, 0);
+    transition: 0.5s;
+    z-index: 10;
+}
+
+#selectLocalStored:hover,
+.botonMenuSuperior:hover {
+    -webkit-box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54); 
+    box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54);
+    color: rgb(129, 63, 9);
+    transition: 0.3s;
+}
+
+.botonMenuSuperior:active {
+    box-shadow: -1px 16px 28px 5px rgba(0, 0, 0, 0.74);
+    color: black;
+    -webkit-box-shadow: -1px 4px 15px 5px rgba(0, 0, 0, 0.651); 
+    box-shadow: -1px 4px 15px 5px rgba(0, 0, 0, 0.644);
+}
+
+#selectLocalStored {
+    background-image: url(../img/brownpaper.png);
+    padding: 5px;
+    margin: 1px 2px;
+    border-radius: 5px;
+    width: 8.5rem;
+    font-family: 'Amatic SC', cursive;
+    font-size: 1.3rem;
+    color: rgb(0, 0, 0);
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 1px 1px 0px #FFFFFF;
+    -webkit-box-shadow: -1px 16px 28px 5px rgba(0,0,0,0.46); 
+    box-shadow: -1px 16px 28px 5px rgba(0,0,0,0.46);
+    border: 1px dashed rgb(136, 127, 43);
+    z-index: 10;
+}
+
+#selectLocalStored option {
+    background-color: rgba(221, 206, 165, 0.548);
+}
+
+#valDiario {
+    line-height: 1.2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.asterisco {
+    font-size: 0.8rem;
+}
+
+.spanNutriInfo {
+    font-family: 'Amatic SC', cursive;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.btn__goToHeaven {
+    position: fixed;
+    right: 8px;
+    bottom: 7px;
+    font-size: 2rem;
+    z-index: 10;
+}
+
+input[type="number" i] {
+    padding: 1px 2px;
+}
+
+
+@media (min-width: 768px) { /* 992px */
+    
+    .paperbkg {
+        min-height: 80vh;
+        max-height: 90vh;
+    }
+
+    .paperbkg--recipe {
+        width: 500px;
+        border-bottom-right-radius: 50px;
+    }
+
+    .recipe {
+        min-height: 50vh;
+        max-height: 60vh;
+    }
+    
+    .lista__scrollable {
+        min-height: 60vh;
+        max-height: 65vh;
+    }
+
+    p,
+    label,
+    span,
+    .ingredientSpan {
+        font-size: 1.3rem;
+    }
+
+    .lista__ingredientes .producto {
+        font-size: 1.3rem;
+    }
+
+    .botonMenuSuperior {
+        max-width: 8.5rem;
+    }
+
+    .paperbkg--ingredients {
+        border-bottom-right-radius: 25px;
+        width: 350px;
+    }
+
+    #searchInput {
+        width: 250px;
+    }
+
+    .paper__pin1 {
+        right: 40%;
+    }
+    .paper__pin2 {
+        right: 50%;
+    }
+
+    .receta__nombre {
+        width: 300px;
+        font-size: 1.3rem;
+    }
+    
+    .porciones__numero {
+        width: 50px;
+        font-size: 1.3rem;
+    }
+}
