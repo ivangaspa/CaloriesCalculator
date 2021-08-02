@@ -12,24 +12,6 @@ body {
     height: 100vh;
 }
 
-#datos {
-    border:1px solid #ccc;padding:10px;font-size:1em;
-}
-
-#datos tr:nth-child(even) {
-    background:#ccc;
-}
-
-#datos th {
-    padding:5px 15px;
-    text-align: left;
-}
-
-#datos td {
-    padding:5px;
-    text-align: left;
-}
-
 .paperbkg {
     position: relative;
     min-height: 25vh;
@@ -167,11 +149,7 @@ select {
     margin-right: 10px;
 }
 
-#lista td {
-    width: 300px;
-}
-
-#lista tr:nth-child(even) {
+#jsonList span:nth-child(even) {
     background:rgba(204, 204, 204, 0.356);
 }
 
@@ -543,6 +521,11 @@ li.submenu>a {
     border-bottom: 5px double #aaa;
 }
 
+.jsonStyle {
+    color: rgb(11, 15, 235);
+    font-weight: 600;
+}
+
 /* Alerta elemento repetido */
 
 #alertaRepetido {
@@ -580,6 +563,19 @@ li.submenu>a {
     background-image: url(../img/postit.png);
     background-repeat: no-repeat;
     background-size: cover;
+    z-index: 10;
+}
+
+#saveSuccessful {
+    display: none;
+    position: fixed;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 20px 0 20px;
+    background-image: url(../img/brownpaper.png);
+    border: solid 1px rgba(0, 0, 0, 0.575);
+    -webkit-box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54); 
+    box-shadow: -1px 4px 15px 5px rgba(0,0,0,0.54);
     z-index: 10;
 }
 
@@ -662,12 +658,12 @@ li.submenu>a {
 }
 
 .asterisco {
-    font-size: 0.8rem;
+    font-size: 0.5rem;
 }
 
 .spanNutriInfo {
     font-family: 'Amatic SC', cursive;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
 }
 
@@ -683,8 +679,7 @@ input[type="number" i] {
     padding: 1px 2px;
 }
 
-
-@media (min-width: 768px) { /* 992px */
+@media (min-width: 768px) {
     
     .paperbkg {
         min-height: 80vh;

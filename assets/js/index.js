@@ -2,73 +2,99 @@
 //**********************************Globales***********************************************//
 let receta = [];
 let renderAgain = false;
-// const URLJSON = "assets/json/recetas.json"
+const URLJSON = "assets/json/recetas.json"
+const URLJSONLIST = "assets/json/lista.json"
 
-//****************************EVENT LISTENERS*********************************************//
-
-//EventListener para los items dentro de las categorías de los alimentos y llamado a función filtrarLista
+//****************************Event Listeners*********************************************//
 const items = document.getElementsByClassName('subnav__item');
     for (let i = 0; i < items.length; i++) {
         items[i].addEventListener('click', filtrarLista);
     }
 
-//EventListener para los alimentos ya filtrados que invocarán a la función agregarProductos
-const productos = document.getElementsByClassName('producto');
-    for (let i = 0; i < productos.length; i++) {
-        productos[i].addEventListener('click', agregarProductos);
-    }
-
-//EventListener para vaciar el array de elementos de la receta  
 const vaciarReceta = document.getElementById('emptyRecipe');
 vaciarReceta.addEventListener('click', vaciarLista);
 
-//EventListener para guardar la receta cargada en el array receta dentro del local storage  
 const botonGuardarLocal = document.getElementById('btn_GuardarLocal');
 botonGuardarLocal.addEventListener('click', guardarLocal);
 
-//EventListener para recuperar la receta cargada en local storage  
 const selectLocalStorage = document.getElementById('selectLocalStored');
 selectLocalStorage.addEventListener('change', recuperarLocal);
 
-//EventListener para borrar una receta de local storage  
 const btnLocalErase = document.getElementById('btnLocalErase');
 btnLocalErase.addEventListener('click', borrarLocal);
 
+const botonCalcular = document.getElementById('CalculoDeCalorias');
+botonCalcular.addEventListener('click', calcularCalorias);
+
+function addListeners() {
+    const productos = document.getElementsByClassName('producto');
+    for (let i = 0; i < productos.length; i++) {
+        productos[i].addEventListener('click', agregarProductos);
+    }
+}
+
+//CLASE INGREDIENTE Y SUS PROTOTIPOS
+class Ingrediente {
+    constructor(descripcion, carbohidratos, proteinas, grasas, cantidad, unidad) {
+        this.descripcion = descripcion;
+        this.carbohidratos = carbohidratos;
+        this.proteinas = proteinas;
+        this.grasas = grasas;
+        this.cantidad = parseFloat(cantidad);
+        this.unidad = unidad;
+        this.calx100 = 0;
+    };
+};
+
+Ingrediente.prototype.modificarCantidad = function(nuevaCantidad) {
+    this.cantidad = nuevaCantidad;
+}
+
+Ingrediente.prototype.modificarUnidad = function(nuevaUnidad) {
+    this.unidad = nuevaUnidad;
+}
+
+Ingrediente.prototype.asignarValorCalorias = function(valorCalX100) {
+    this.calx100 = valorCalX100;
+}
 
 //****************************Busqueda manual*********************************************//
-
 $('#searchInput').keyup(function() {
 
-    const tableItem = document.getElementById('lista');
     const searchText = document.getElementById('searchInput').value.toLowerCase();
-    
-    // Recorremos todas las filas de la tabla
-    for (let i = 1; i < tableItem.rows.length; i++) {
+    $("#jsonList").empty();
 
-        let found = false;
-        const nombreItem = tableItem.rows[i].getElementsByTagName('td');
-        // Recorremos las celdas con Nombres
-        if(!found) {
-            const compareWith = nombreItem[1].innerHTML.toLowerCase();
-            // Buscamos el texto en el contenido de la celda
-            if (compareWith.indexOf(searchText) > -1) {
-                found = true;
+    $.getJSON(URLJSONLIST, function (respuesta, estado) {
+        if(estado === "success") {
+            let jsonList = respuesta;
+            let found = false;
+
+            for (let i = 0; i < jsonList.length; i++) {
+
+                if(!found) {
+                    const compareWith = jsonList[i].nombre.toLowerCase();
+                    if (compareWith.indexOf(searchText) > -1) {
+                        found = true;
+                    }
+                }
+                if (found) {
+                    const listElemment = document.createElement("span");
+                    listElemment.classList.add("producto");
+                    listElemment.textContent = jsonList[i].nombre;
+                    $("#jsonList").append(listElemment);
+                    found = false;
+                }
+
+                if(searchText.length == 0) {
+                    $("#jsonList").empty();
+                }
             }
         }
-        if (found) {
-            tableItem.rows[i].style.display = '';
-        } else {
-            tableItem.rows[i].style.display = 'none';
-        }
-        // Si no hay texto en el input se filtra la lista al valor default (Vacio)
-        if(searchText.length == 0) {
-            filtrarLista();
-        }
-    }
+        addListeners();
+    });
 });
 
 //****************************Botón Acerca De*********************************************//
-
 $("#btn_acercaDe").click(function() {
 
     $("#acercaDe").html("");
@@ -82,8 +108,8 @@ $("#btn_acercaDe").click(function() {
                         "width": ancho + "px",
                         "top": posicion_y,
                         "left": posicion_x });
-                        
-    $("#acercaDe").append('<p class=" text-acercaDe mt-5 mb-1 ps-5">Calculador Energético de tus Recetas -- Versión 1.5</p>');
+
+    $("#acercaDe").append('<p class=" text-acercaDe mt-5 mb-1 ps-5">Calculador Energético de tus Recetas -- Versión 1.5.4</p>');
     $("#acercaDe").append('<p class=" text-acercaDe mb-2 ps-5">Simulador web interactivo desarrollado utilizando javascript y jQuery con el objetivo de entrega como proyecto final para Coder House en la segunda etapa del curso de Full Stack.</p>');
     $(".text-acercaDe").css("font-weight", "400");
     $(".text-acercaDe").css("padding-top", "60px");
@@ -101,20 +127,19 @@ $("#btn_acercaDe").click(function() {
     $("#acercaDe").fadeIn("slow");
 });
 
-
-//****************************FUNCIONES*********************************************//
+//****************************Funciones*********************************************//
 
 $(document).ready(function () {
     $('.parent').click(function () {
-        $(this).find('.submenu').toggle('visible'); //Hace visible clase submenu
+        $(this).find('.submenu').toggle('visible');
 
-        var angleRight = $(this).children().find('a').find('.fa-angle-right'); //encuentra los hijos con clase fa-angle-right
-        var angleDown = $(this).children().find('a').find('.fa-angle-down'); //encuentra los hijos con clase fa-angle-down
+        var angleRight = $(this).children().find('a').find('.fa-angle-right');
+        var angleDown = $(this).children().find('a').find('.fa-angle-down');
 
-        if (angleRight.hasClass('fa-angle-right')) { //si tiene clase fa-angle-right la cambia por fa-angle-down
+        if (angleRight.hasClass('fa-angle-right')) {
             angleRight.toggleClass('fa-angle-right fa-angle-down');
             $(this).find('.menu-item').css('border-color', '#ed3e95');
-        } else { //sino cambia por  fa-angle-right
+        } else {
             angleDown.toggleClass('fa-angle-down fa-angle-right');
             $(this).find('.menu-item').css('border-color', '#F7F7F7');
         }
@@ -157,21 +182,50 @@ function guardarLocal() {
     optionStored.textContent = document.getElementById('rname').value;
     selectLocalStorage.appendChild(optionStored);
 
+    $("#saveSuccessful").html("");
+
+    let ancho = 350;
+    let alto = 50;
+    let posicion_x = calcularCentroPantallaW(ancho);
+    let posicion_y = calcularCentroPantallaH(alto) -200;
+
+    $("#saveSuccessful").css({"height": alto + "px",
+                        "width": ancho + "px",
+                        "top": posicion_y,
+                        "left": posicion_x });
+    
+    $("#saveSuccessful").append('<p>Receta guardada correctamente!</p>');
+    $("#saveSuccessful").slideDown("slow").delay(1000).slideUp("slow");
+
 }
 
 function recuperarLocal() {
 
     vaciarLista();
-    console.log(this.value);
-    let nombreReceta = document.getElementById('rname');
+    const nombreReceta = document.getElementById('rname');
     nombreReceta.value = this.value;
+
+    $.getJSON(URLJSON, function (respuesta, estado) {
+        if(estado === "success") {
+            let miJson = respuesta;
+
+            for (let i = 0; i < miJson.length; i++) {
+                if (miJson[i].nombre == nombreReceta.value) {
+                    const porciones = document.getElementById('porciones');
+                    porciones.value = miJson[i].porciones;
+                    receta = miJson[i].ingredientes;
+                    renderAgain = true;
+                    renderizarReceta();
+                }
+            }
+        }
+    });
 
     for (let i = 0; i < localStorage.length; i++) {
         let clave = localStorage.key(i);
         if (clave == "#CVE#" + this.value) {
 
             receta = JSON.parse(localStorage.getItem(clave));
-            console.log(receta);
             renderAgain = true;
             renderizarReceta();
         }  
@@ -204,9 +258,22 @@ function renderizarLocalStorage() {
             selectLocalStorage.appendChild(optionStored);
         }
     }
+
+    $.getJSON(URLJSON, function (respuesta, estado) {
+        if(estado === "success") {
+            let miJson = respuesta;
+
+            for (let j=0; j < miJson.length ; j++) {
+                const optionStored = document.createElement("option");
+                optionStored.classList.add("jsonStyle");
+                optionStored.textContent = miJson[j].nombre;
+                $("#selectLocalStored").append(optionStored);
+            }
+        }
+    });
+
 }
 
-// Agrego el valor del input parseado a flotante en la propiedad .cantidad de cada ingrediente 
 function agregarCantidad() {
 
     let cantidad = parseFloat(this.value);
@@ -233,13 +300,11 @@ function agregarUnidad() {
 
 function borrarIngrediente() {
 
-    console.log("eliminar: " + this.id);
     const borrarIngrediente = document.getElementsByClassName('botonDelete');
     
     for (let i = 0; i < borrarIngrediente.length; i++) {
         if(borrarIngrediente[i].id == this.id) {
             receta.splice(i, 1);
-            console.log(receta);
 
             const contador = document.getElementById('contIngredient');
             contador.textContent =  0;
@@ -254,96 +319,26 @@ function borrarIngrediente() {
 
 }
 
-// función para remover la clase que muestra el submenu al hacer click fuera del objeto cuando se hace click en otro menu que comparte la misma clase.
-function removeSubNav(subNavItem) {
-
-    for (let i = 0; i < subNavArray.length; i++ ) {
-
-        if (subNavArray[i] != subNavItem) {
-            document.getElementById(buttonNavArray[i]).classList.remove(subNavArray[i]);
-        }
-    }
-}
-
-// función para remover la clase que muestra el submenu al hacer click fuera del objeto.
-// window.onclick = function(event) {
-
-//     if (event.target.matches('.subnavbtn')) {
-
-//         let buttonName = event.target.textContent;
-//         switch(buttonName) {
-
-//             case "Lácteos y Huevos":
-//                 removeSubNav("subnav__lacteos");
-//                 break;
-//             case "Carnes":
-//                 removeSubNav("subnav__carnes");
-//                 break;
-//             case 'Vegetales':
-//                 removeSubNav("subnav__vegetales");
-//                 break;
-//             case 'Cereales':
-//                 removeSubNav("subnav__cereales");
-//                 break;
-//             case 'Grasos':
-//                 removeSubNav("subnav__grasos");
-//                 break;
-//             case 'Bebidas':
-//                 removeSubNav("subnav__bebidas");
-//                 break;
-//             default:
-//                 break;
-//         }
-
-//     } else {
-
-//         let submenu = $(".subnav-content");
-//         let subnav = $(".subnav");
-        
-//         for (let i = 0; i < submenu.length; i++) {
-//             let submenuAbierto = submenu[i];
-//             let subnavOpen = subnav[i];
-
-//             if (submenuAbierto.classList.contains('mostrarSubmenu')) {
-//                 submenuAbierto.classList.remove('mostrarSubmenu');
-//             }
-
-//             if (subnavOpen.classList.contains(subNavArray[i])) {
-//                 subnavOpen.classList.remove(subNavArray[i]);
-//             }
-
-//         }
-//     }
-// }
-
 function vaciarLista() {
-    // Volvemos a dejar el array vacio y ponemos el text.content del span con id 'contIngredient' en 0 
-    receta = [];
 
+    receta = [];
     const contador = document.getElementById('contIngredient');
     contador.textContent =  0;
-
-// Se vacia el continido dentro del form con id 'ingredientes'
     const ingredientsForm = document.getElementById('ingredientes');
     ingredientsForm.textContent = '';
-// Se pone el valor 1 dentro del imput con id 'porciones'   
     const porcionesInput = document.getElementById('porciones');
     porcionesInput.value = 1;
-// Se remueve la clase que hace visible la tabla de valores nutricionales de la receta  
     const mostrarTablaInfo = document.getElementById('tablaInfoNutri');
     mostrarTablaInfo.classList.remove('d-block');
-
-    console.log(receta);
 }
 
+/*********************************AGREGAR PRODUCTOS*********************************************/
 function agregarProductos() {
 
-    // Si array receta (inicialmente vacio) es igual a 0 no se realiza ninguna acción, pero a medida que se vayan incorporando objetos 
-    // la idea es que no se repitan en la receta y por ello se filtrara nuevamente el array para buscar coincidencias y elejir no mostrar 
-    // los productos que ya fueron agregados mediante un return que interrumpe el flujo de la funcion.
-    
+    let ingredienteSeleccionado = this.textContent;
+
     for(let j = 0 ; j < receta.length ; j++) {
-        if(receta[j].descripcion == this.innerHTML) {
+        if(receta[j].descripcion == this.textContent) {
             
             let ancho = 450;
                         let  posicion_x = calcularCentroPantallaW(ancho);
@@ -356,53 +351,45 @@ function agregarProductos() {
             return;
         }
     }
-    
-    // Se realiza una búsqueda de coincidencias en el 'td' correpondiente a la posición 1 (En esa posición se encuentra el Nombre del ingrediente) 
-    // Si la búsqueda arroja un resultado positivo se procede a llamar a la función constructora y hacer un push para ingresarlo al array receta.
-    // Si se encontro una coincidencia se asume que no es necesario seguir buscando y se utiliza un break. Se que no es lo más eficiente o efectivo pero 
-    // quedará pendiente pulirlo buscando una manera menos demandante de recursos para llegar al mismo resultado.
-    // De momento solo se me ocurre que al hacer click sobre el nombre del ingrediente pueda haber alguna forma de conocer el innerHTML del 'td' que se 
-    // encuentra antes de la descripción en la tabla. En este caso conoceria el ID del elemento de antemano y podría ingresar a la función sin 
-    // la necesidad de iterar un bucle.
 
-    const buscarIgrediente = document.getElementById('lista');
+    $.getJSON(URLJSONLIST, function (respuesta, estado) {
+        if(estado === "success") {
+            let jsonList = respuesta;
 
-    for (let i = 0; i < buscarIgrediente.rows.length; i++) {
-        
-        const filasbuscarIgrediente = buscarIgrediente.rows[i].getElementsByTagName('td');
+            for (let i = 0; i < jsonList.length; i++) {
 
-        const compareName = filasbuscarIgrediente[1].innerHTML;
+                const compararNombre = jsonList[i].nombre;
 
-        if (compareName == this.innerHTML) {
+                if (compararNombre == ingredienteSeleccionado) {
+                    let carbohidratos = parseFloat(jsonList[i].carbohidratos);
+                    let proteinas = parseFloat(jsonList[i].proteinas);
+                    let grasas = parseFloat(jsonList[i].grasas);
+                    
+                    let producto = new Ingrediente(jsonList[i].nombre, carbohidratos, proteinas, grasas, 0 , "gr");
+                    if (jsonList[i].id >= 289) {
+                        producto.asignarValorCalorias(jsonList[i].calx100);
+                    }
+                    receta.push(producto);
 
-            let carbohidratos = parseFloat(filasbuscarIgrediente[3].innerHTML);
-            let proteinas = parseFloat(filasbuscarIgrediente[4].innerHTML);
-            let grasas = parseFloat(filasbuscarIgrediente[5].innerHTML);
-            let producto = new Ingrediente(this.innerHTML, carbohidratos, proteinas, grasas, 0 , "gr");
-            receta.push(producto);
+                    renderAgain = false;
+                    renderizarReceta();
 
-            console.log(receta);
-
-            renderAgain = false;
-            renderizarReceta();
-
-            break;
+                    break;
+                }
+            }
         }
-    }  
+    });
 }
 
 function renderizarReceta() {
-    
-    // Se utilizó un template en el HTML para no tener que dibujar a mano cada uno de los elementos y se modificaron dinamicamente los contenidos 
-    // y ID necesarios para diferenciar los objetos
+
     const contador = document.getElementById('contIngredient');
     contador.textContent = receta.length;
 
-    const ingredientesList = document.getElementById('ingredientes')
+    const ingredientesList = document.getElementById('ingredientes');
     const template = document.querySelector('#template-ingredient').content;
     const fragment = document.createDocumentFragment();
     let index;
-    
     
     if(renderAgain == false) {
         index = (receta.length)-1;
@@ -418,7 +405,6 @@ function renderizarReceta() {
         fragment.appendChild(clone);
     
         ingredientesList.appendChild(fragment);
-        // Agregamos Eventlisteners a los input y select de cada ingrediente creado
         const cantidadIngresada = document.getElementById(`input${index}`);
         cantidadIngresada.addEventListener('keyup', agregarCantidad);
         const unidadMedida = document.getElementById(`select${index}`);
@@ -439,7 +425,6 @@ function renderizarReceta() {
             fragment.appendChild(clone);
         
             ingredientesList.appendChild(fragment);
-            // Agregamos Eventlisteners a los input y select de cada ingrediente creado
             const cantidadIngresada = document.getElementById(`input${i}`);
             cantidadIngresada.addEventListener('keyup', agregarCantidad);
             const unidadMedida = document.getElementById(`select${i}`);
@@ -454,10 +439,6 @@ function renderizarReceta() {
 }
 
 function filtrarLista() {
-
-// Al ingresar a la función lo primero que se realiza es una asignación de rangos de búsqueda mediante un switch. Las variables de inicio
-// y fin de lista tienen como finalidad permitir al algoritmo de busqueda filtrar los contenidos de una tabla (muy extensa para mostrarse entera)
-//  y así lograr segmentar los ingredientes por categorías para mayor comodidad del usuario al momento de manipular la información.
 
     let inicioLista, finLista;
 
@@ -482,7 +463,7 @@ function filtrarLista() {
             inicioLista = 56;
             finLista = 67;
             break;
-        case 'carnedecaza':
+        case 'carneDeCaza':
             inicioLista = 68;
             finLista = 73;
             break;
@@ -490,7 +471,7 @@ function filtrarLista() {
             inicioLista = 74;
             finLista = 79;
             break;
-        case 'fiambresyembutidos':
+        case 'fiambresyEmbutidos':
             inicioLista = 80;
             finLista = 93;
             break;
@@ -510,72 +491,101 @@ function filtrarLista() {
             inicioLista = 122;
             finLista = 158;
             break;
+        case 'legumbres':
+            inicioLista = 159;
+            finLista = 163;
+            break;    
+        case 'frutas':
+            inicioLista = 164;
+            finLista = 185;
+            break;
+        case 'frutasSyD':
+            inicioLista = 186;
+            finLista = 196;
+            break;
+        case 'cereales':
+            inicioLista = 197;
+            finLista = 222;
+            break;
+        case 'pastasFrescasySecas':
+            inicioLista = 223;
+            finLista = 232;
+            break;
+        case 'pan':
+            inicioLista = 233;
+            finLista = 238;
+            break;
+        case 'facturasyMasas':
+            inicioLista = 239;
+            finLista = 248;
+            break;        
+        case 'galletas':
+            inicioLista = 249;
+            finLista = 256;
+            break;        
+        case 'grasasyAceites':
+            inicioLista = 257;
+            finLista = 265;
+            break;        
+        case 'mayonesaySalsas':
+            inicioLista = 266;
+            finLista = 273;
+            break;        
+        case 'azucaryDulces':
+            inicioLista = 274;
+            finLista = 285;
+            break;        
+        case 'bebidasSinAlcohol':
+            inicioLista = 286;
+            finLista = 288;
+            break;        
+        case 'aperitivosyCerveza':
+            inicioLista = 289;
+            finLista = 292;
+            break;        
+        case 'champagneyLicores':
+            inicioLista = 293;
+            finLista = 299;
+            break;        
+        case 'vinosyDestilados':
+            inicioLista = 300;
+            finLista = 312;
+            break;        
         default:
             inicioLista = 0;
             finLista = 0;
-            /* se cargarán más casos cuando se carguen mas elementos en la tabla*/
     }                
 
-// La tabla se filtra a lo largo de todas sus filas y se carga en la variable compareId cada uno de los números de id de la tabla en cada iteración
-// Luego se compara si dicho id se encuentra en el rango seleccionado y se cambia el estilo display para ocultar los elementos que no pertenecen
-// a esa categoría y dejar visibles los que cumplen. Sobre los elementos que si cumplen luego se asignará un addEventListener y se llamará 
-// a la función constructora de objetos que contendrá algunas de sus propiedades provenientes de la tabla en el HTML.
+    $("#jsonList").empty();
 
-    const tabla = document.getElementById('lista');
+    $.getJSON(URLJSONLIST, function (respuesta, estado) {
+        if(estado === "success") {
+            let jsonList = respuesta;
 
-    for (let i = 0; i < tabla.rows.length; i++) {
-        
-        const filasTabla = tabla.rows[i].getElementsByTagName('td');
+            for (let i = 0; i < jsonList.length; i++) {
 
-        const compareId = parseInt(filasTabla[0].innerHTML);
-
-        if (compareId >= inicioLista && compareId <= finLista) {
-            tabla.rows[i].style.display = '';
-        }else {
-            tabla.rows[i].style.display = 'none';
+                if (jsonList[i].id >= inicioLista && jsonList[i].id <= finLista) {
+                    const listElemment = document.createElement("span");
+                    listElemment.classList.add("producto");
+                    listElemment.textContent = jsonList[i].nombre;
+                    $("#jsonList").append(listElemment);
+                }
+            }
         }
-    }
+        addListeners();
+    });
 }
 
-class Ingrediente {
-    constructor(descripcion, carbohidratos, proteinas, grasas, cantidad, unidad) {
-        this.descripcion = descripcion;
-        this.carbohidratos = carbohidratos;
-        this.proteinas = proteinas;
-        this.grasas = grasas;
-        this.cantidad = parseFloat(cantidad);
-        this.unidad = unidad;
-    };
-};
-
-Ingrediente.prototype.modificarCantidad = function(nuevaCantidad) {
-    this.cantidad = nuevaCantidad;
-}
-
-Ingrediente.prototype.modificarUnidad = function(nuevaUnidad) {
-    this.unidad = nuevaUnidad;
-}
-
-// Se llama a la funcion filtrar lista para que al iniciar la página no aparezca la tabla completa 
-filtrarLista();
-//Se vuelven a dibujar los option que representan recetas del local Storage
-renderizarLocalStorage();
-
-// listener del botón de calculo.
-let botonCalcular = document.getElementById('CalculoDeCalorias');
-botonCalcular.addEventListener('click', calcularCalorias);
-
-// Recorro el array receta con los elementos que se cargaron y para cada valor se calculan las proteinas, carbohidratos y grasas.
 function calcularCalorias() {
 
     let caloriasTot = 0;
     let hcTot = 0;
     let grasasTot = 0;
     let proteTot = 0;
-    let PesoBruto = 0;
     let grProt = 0;
     let grGrasa = 0;
     let grHc = 0;
+    let calx100 = 0;
 
     for (let i = 0; i < receta.length; i++) {
         let cantidad;
@@ -615,22 +625,32 @@ function calcularCalorias() {
                 break;
         }
 
-        PesoBruto += cantidad;
-
         let carbohidratos = receta[i].carbohidratos;
         let proteinas = receta[i].proteinas;
         let grasas = receta[i].grasas;
         
-        hcTot += ((cantidad * carbohidratos)/100)*4;
-        proteTot += ((cantidad * proteinas)/100)*4;
-        grasasTot += ((cantidad * grasas)/100)*9;
+        if (receta[i].calx100 != 0) {
 
-        grProt += (cantidad * proteinas)/100;
-        grGrasa += (cantidad * grasas)/100;
-        grHc += (cantidad * carbohidratos)/100;
+            calx100 += ((cantidad * parseInt(receta[i].calx100))/100);
+
+            grProt += (cantidad * proteinas)/100;
+            grGrasa += (cantidad * grasas)/100;
+            grHc += (cantidad * carbohidratos)/100;
+            
+        }else {
+
+            hcTot += ((cantidad * carbohidratos)/100)*4;
+            proteTot += ((cantidad * proteinas)/100)*4;
+            grasasTot += ((cantidad * grasas)/100)*9;
+
+            grProt += (cantidad * proteinas)/100;
+            grGrasa += (cantidad * grasas)/100;
+            grHc += (cantidad * carbohidratos)/100;
+        }
+        
     }
 
-    caloriasTot = hcTot + proteTot + grasasTot;
+    caloriasTot = calx100 + hcTot + proteTot + grasasTot;
 
     const nombreReceta = document.getElementById('rname').value;
     const nombreRecetaTabla = document.getElementById('nombre__receta');
@@ -650,7 +670,7 @@ function calcularCalorias() {
     nombreRecetaTabla.textContent = nombreReceta;
     porcionesTabla.textContent = cantPorciones;
     calTot.textContent = "Calorías totales: " + caloriasTot.toFixed(2) + " Kcal";
-    spanCalTotPorcion.textContent = (caloriasTot/cantPorciones).toFixed(2) + " Kcal";
+    spanCalTotPorcion.textContent = (caloriasTot/cantPorciones).toFixed(2);
     spanProtePorcion.textContent = (grProt/cantPorciones).toFixed(2);
     spanGrasaPorcion.textContent = (grGrasa/cantPorciones).toFixed(2);
     spanHcPorcion.textContent = (grHc/cantPorciones).toFixed(2);
@@ -659,9 +679,9 @@ function calcularCalorias() {
     vdGrasa.textContent = Math.round(((grGrasa/cantPorciones)*100)/55);
     vdHC.textContent = Math.round(((grHc/cantPorciones)*100)/300);
 
-    console.log("Calorías Totales: " + caloriasTot + "Kcal \nCarbohidratos Totales: " + hcTot + "\nProteinas Totales: " + proteTot + "\nGrasas Totales: " + grasasTot);
-    console.log("Peso Bruto: " + PesoBruto);
-
     const mostrarTablaInfo = document.getElementById('tablaInfoNutri');
     mostrarTablaInfo.classList.add('d-block');
 }
+
+//Renderizado del local Storage
+renderizarLocalStorage();

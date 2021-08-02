@@ -1,4 +1,4 @@
--- Calculador Energético de tus recetas -- V1.5
+-- Calculador Energético de tus recetas -- V1.5.4
 
 Simulador interactivo para calcular los valores energéticos de una receta creada por el usuario.
 Se deben incluir  a la receta los ingredientes de una lista que ya se encuentra cargada, 
