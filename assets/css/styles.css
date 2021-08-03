@@ -115,10 +115,6 @@ select {
     border: none;
 }
 
-.lista__ingredientes td {
-    display: none;
-}
-
 .lista__ingredientes .producto {
     display: block;
     font-family: 'Indie Flower', cursive;
@@ -519,11 +515,6 @@ li.submenu>a {
 
 .line-separator {
     border-bottom: 5px double #aaa;
-}
-
-.jsonStyle {
-    color: rgb(11, 15, 235);
-    font-weight: 600;
 }
 
 /* Alerta elemento repetido */

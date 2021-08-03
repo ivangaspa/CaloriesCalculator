@@ -1,8 +1,6 @@
-
 //**********************************Globales***********************************************//
 let receta = [];
 let renderAgain = false;
-const URLJSON = "assets/json/recetas.json"
 const URLJSONLIST = "assets/json/lista.json"
 
 //****************************Event Listeners*********************************************//
@@ -163,8 +161,8 @@ function calcularCentroPantallaH(alto) {
 
 function guardarLocal() {
 
-    let porciones = parseInt(document.getElementById('porciones').value) + 10;
-    const claveNombreReceta = "#CVE#" + document.getElementById('rname').value;
+    let porciones = parseInt(document.getElementById('porciones').value) + 100;
+    const claveNombreReceta = "#CVE#" + porciones + document.getElementById('rname').value;
 
     for (let i = 0; i < localStorage.length; i++) {
         let clave = localStorage.key(i);
@@ -204,27 +202,13 @@ function recuperarLocal() {
     vaciarLista();
     const nombreReceta = document.getElementById('rname');
     nombreReceta.value = this.value;
-
-    $.getJSON(URLJSON, function (respuesta, estado) {
-        if(estado === "success") {
-            let miJson = respuesta;
-
-            for (let i = 0; i < miJson.length; i++) {
-                if (miJson[i].nombre == nombreReceta.value) {
-                    const porciones = document.getElementById('porciones');
-                    porciones.value = miJson[i].porciones;
-                    receta = miJson[i].ingredientes;
-                    renderAgain = true;
-                    renderizarReceta();
-                }
-            }
-        }
-    });
+    const porciones = document.getElementById('porciones');
 
     for (let i = 0; i < localStorage.length; i++) {
         let clave = localStorage.key(i);
-        if (clave == "#CVE#" + this.value) {
+        if (clave.slice(8) == this.value) {
 
+            porciones.value = parseInt(clave.slice(5, 8)) - 100;
             receta = JSON.parse(localStorage.getItem(clave));
             renderAgain = true;
             renderizarReceta();
@@ -235,10 +219,12 @@ function recuperarLocal() {
 function borrarLocal() {
 
     const selectedReceta = document.getElementById('selectLocalStored');
-    let clave = "#CVE#" + selectedReceta.value;
+    const porciones = document.getElementById('porciones');
+    const numPorciones = parseInt(porciones.value) + 100;
+
+    let clave = "#CVE#" + numPorciones + selectedReceta.value;
     localStorage.removeItem(clave);
-    const selectLocalStored = document.getElementById('selectLocalStored');
-    selectLocalStored.innerHTML = `<option selected="" disabled="" value="0">Seleccione receta</option>`;
+    selectedReceta.innerHTML = `<option selected="" disabled="" value="0">Seleccione receta</option>`;
     vaciarLista();
     renderizarLocalStorage();
 }
@@ -252,26 +238,12 @@ function renderizarLocalStorage() {
         let clave = localStorage.key(i);
         claveCut = clave.slice(0, 5);
         if (claveCut == "#CVE#") {
-            claveName = clave.slice(5);
+            claveName = clave.slice(8);
             const optionStored = document.createElement("option");
             optionStored.textContent = claveName;
             selectLocalStorage.appendChild(optionStored);
         }
     }
-
-    $.getJSON(URLJSON, function (respuesta, estado) {
-        if(estado === "success") {
-            let miJson = respuesta;
-
-            for (let j=0; j < miJson.length ; j++) {
-                const optionStored = document.createElement("option");
-                optionStored.classList.add("jsonStyle");
-                optionStored.textContent = miJson[j].nombre;
-                $("#selectLocalStored").append(optionStored);
-            }
-        }
-    });
-
 }
 
 function agregarCantidad() {
@@ -439,6 +411,8 @@ function renderizarReceta() {
 }
 
 function filtrarLista() {
+
+    $('#searchInput').val("");
 
     let inicioLista, finLista;
 
